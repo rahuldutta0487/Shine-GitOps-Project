@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-import google.generativeai as genai
+from google import genai
 
 # Collect kubectl logs for a pod
 def get_logs(pod_name, namespace="retail"):
@@ -42,8 +42,8 @@ def analyze_with_gemini(logs, events, scenario):
     if not api_key:
         raise ValueError("GEMINI_API_KEY environment variable is not set. Please get a free API key from Google AI Studio (aistudio.google.com).")
     
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    # Initialize the modern Google GenAI client
+    client = genai.Client(api_key=api_key)
     
     prompt = (
         f"Kubernetes issue: {scenario}\n\n"
@@ -52,7 +52,10 @@ def analyze_with_gemini(logs, events, scenario):
         "Find the root cause and provide step-by-step remediation."
     )
     
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
     return response.text
 
 # Scenario 1: Pod continuously restarting (CrashLoopBackOff)
