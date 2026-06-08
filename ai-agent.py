@@ -37,9 +37,10 @@ def get_k8s_events(namespace="retail"):
 
 # Send logs and events to Claude for analysis
 def analyze_with_claude(logs, events, scenario):
-    client = anthropic.Anthropic(api_key="YOUR_CLAUDE_API_KEY")
+    # Initializes using the ANTHROPIC_API_KEY environment variable securely
+    client = anthropic.Anthropic()
     message = client.messages.create(
-        model="claude-opus-4-5",
+        model="claude-3-5-sonnet-20241022",
         max_tokens=1024,
         messages=[{
             "role": "user",
@@ -79,7 +80,19 @@ def troubleshoot_deployment_failure(namespace="retail"):
 
 # Main
 if __name__ == "__main__":
-    pod = "userprofile-rollout-abc123"
+    # Dynamically find a running userprofile pod in the retail namespace
+    try:
+        pod = subprocess.run(
+            ["kubectl", "get", "pods", "-n", "retail", "-l", "app=userprofile", "-o", "jsonpath={.items[0].metadata.name}"],
+            capture_output=True, text=True, check=True
+        ).stdout.strip()
+    except Exception:
+        pod = ""
+
+    if not pod:
+        print("No active userprofile pods found in 'retail' namespace. Using fallback pod name.")
+        pod = "userprofile-rollout-7c79cc995f-pzlsq"
+
     troubleshoot_pod_restart(pod)
     troubleshoot_high_latency(pod)
     troubleshoot_deployment_failure()

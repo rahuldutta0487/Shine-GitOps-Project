@@ -134,6 +134,39 @@ kubectl get rollout -n retail
 --   argocd    → Sync Status = Synced, Health = Healthy --
 
 ==============================================================
+PHASE 12 — Observability & Monitoring (Datadog)
+==============================================================
+-- 1. Add Datadog Helm Repository:
+helm repo add datadog https://helm.datadoghq.com
+helm repo update
+
+-- 2. Install Datadog Agent (Replace <YOUR_DATADOG_API_KEY> with your key):
+helm install datadog-agent datadog/datadog `
+  --set datadog.apiKey=<YOUR_DATADOG_API_KEY> `
+  --set datadog.logs.enabled=true `
+  --set datadog.logs.containerCollectAll=true `
+  --set datadog.apm.enabled=true `
+  --set datadog.processAgent.enabled=true `
+  --namespace default
+
+-- 3. Verify Datadog pods are running:
+kubectl get pods -l app=datadog-agent
+
+==============================================================
+PHASE 13 — AI-Driven Troubleshooting (Claude API)
+==============================================================
+-- 1. Install required Python packages:
+pip install anthropic
+
+-- 2. Set your Anthropic API Key (PowerShell):
+$env:ANTHROPIC_API_KEY="your-api-key-here"
+
+-- 3. Run the AI Agent script:
+# Note: First check your pod names with: kubectl get pods -n retail
+# Update the pod name in the __main__ block at the bottom of ai-agent.py to match your pod name.
+python ai-agent.py
+
+==============================================================
 ROLLBACK (if needed)
 ==============================================================
 kubectl argo rollouts undo userprofile-rollout -n retail
