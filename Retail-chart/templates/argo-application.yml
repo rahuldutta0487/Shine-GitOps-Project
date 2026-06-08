@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Msocial123/Shine-GitOps-Project.git
+    repoURL: https://github.com/jeevan0024/Shine-GitOps-Project.git
     targetRevision: main
     path: Retail-chart
     helm:
@@ -14,7 +14,7 @@ spec:
         userprofile:
           activeVersion: blue
   destination:
-    server: https://180C48E2CB31D6D78FC21B5A77FCDB66.gr7.us-east-1.eks.amazonaws.com
+    server: https://kubernetes.default.svc
     namespace: retail
   syncPolicy:
     automated:
