@@ -9,11 +9,11 @@ database:
 
 userprofile:
   name: userprofile-deployment
-  image: jeevanc31/aws-retail-app:v1.4.0
+  image: saiteja2502/userprofileretail:latest
   port: 3130
   mongodbUri: "mongodb://mongodb-deployment:27017/myDatabase"
-  label: userprofile
-  activeVersion: blue  # Change to 'green' when switching versions
+  label: shine-app
+  activeVersion: green  # Change to 'green' when switching versions
 
 mongodb:
   service:
